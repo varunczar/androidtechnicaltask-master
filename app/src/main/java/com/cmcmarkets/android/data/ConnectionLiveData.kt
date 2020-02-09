@@ -1,19 +1,14 @@
 package com.cmcmarkets.android.data
 
-import android.annotation.TargetApi
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import android.net.NetworkRequest
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.LiveData
-import javax.inject.Inject
 
 /**
  * This class helps in monitoring the current network state
@@ -59,6 +54,7 @@ class ConnectionLiveData constructor(val context: Context) : LiveData<Connectivi
                 //Called when the network connectivity is patchy and is about to be disconnected
                 postValue(ConnectivityState.UNSTABLE)
             }
+
             override fun onLost(network: Network?) {
                 //Called when the network connectivity is lost
                 postValue(ConnectivityState.LOST)
@@ -73,11 +69,10 @@ class ConnectionLiveData constructor(val context: Context) : LiveData<Connectivi
     private fun updateConnection() {
         val activeNetwork = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         activeNetwork?.let {
-            if(it.hasTransport (TRANSPORT_CELLULAR) || it.hasTransport(TRANSPORT_WIFI)) {
+            if (it.hasTransport(TRANSPORT_CELLULAR) || it.hasTransport(TRANSPORT_WIFI)) {
                 //Connected fine
                 postValue(ConnectivityState.CONNECTED)
-            }
-            else {
+            } else {
                 //Connectivity lost
                 postValue(ConnectivityState.LOST)
             }

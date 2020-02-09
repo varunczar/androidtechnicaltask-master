@@ -21,8 +21,8 @@
                 android:id="@+id/country_currency"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/default_margin"
+                android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 tools:text="US - Pound" />
 
@@ -44,7 +44,6 @@
                 tools:text="Margin: 5%" />
 
         </LinearLayout>
-
 
 
     </LinearLayout>
