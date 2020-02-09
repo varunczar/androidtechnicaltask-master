@@ -1,8 +1,6 @@
 package com.cmcmarkets.android.repository
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.cmcmarkets.api.ApiError
 import com.cmcmarkets.api.products.IProductApi
 import com.cmcmarkets.api.products.IWatchlistApi
 import com.cmcmarkets.api.products.WatchlistTO
@@ -42,9 +40,13 @@ class Repository @Inject constructor() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 { success ->
-
                                     isLoading.postValue(false)
-                                    watchListItems.postValue(success)
+                                    if(success.isNotEmpty()) {
+                                        watchListItems.postValue(success)
+                                    }
+                                    else {
+                                        mThrowable.postValue(Throwable("No data"))
+                                    }
                                     clearCompositeDisposable()
                                 }, {
                             isLoading.postValue(false)

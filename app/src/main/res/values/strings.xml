@@ -11,5 +11,6 @@
     <string name="error_session_expired">The session has expired. Please try again later</string>
     <string name="error_session_unrecognised">The session cannot be verified. Please try again later</string>
     <string name="error_session_disconnected">The connection was suspended mid-way</string>
+    <string name="error_no_data">No data available. Please try again later</string>
     <string name="error_generic">Error communicating with the server. Please try again later</string>
 </resources>

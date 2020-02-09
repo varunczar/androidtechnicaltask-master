@@ -13,7 +13,7 @@ import androidx.lifecycle.LiveData
 /**
  * This class helps in monitoring the current network state
  */
-class ConnectionLiveData constructor(val context: Context) : LiveData<ConnectivityState>() {
+class ConnectionLiveData constructor(context: Context) : LiveData<ConnectivityState>() {
 
     private var connectivityManager: ConnectivityManager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 

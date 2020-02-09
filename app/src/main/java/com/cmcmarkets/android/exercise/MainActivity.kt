@@ -3,6 +3,7 @@ package com.cmcmarkets.android.exercise
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.cmcmarkets.android.exercise.fragments.WatchListsFragment
 import dagger.android.AndroidInjection
 
 /**
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setFragment(WatchListsFragment.newInstance())
     }
 
     /**

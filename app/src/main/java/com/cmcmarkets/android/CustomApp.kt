@@ -2,8 +2,11 @@ package com.cmcmarkets.android
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.fragment.app.Fragment
 import com.cmcmarkets.android.injection.DaggerAppComponent
+import com.cmcmarkets.api.internal.implementations.ConnectionMonitor
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -20,6 +23,11 @@ class CustomApp : Application(), HasActivityInjector, HasSupportFragmentInjector
 
     override fun onCreate() {
         super.onCreate()
+        (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
+            registerInternetChangesListener {
+                ConnectionMonitor.isConnected = it
+            }
+        }
 
         //Injecting the application
         DaggerAppComponent
