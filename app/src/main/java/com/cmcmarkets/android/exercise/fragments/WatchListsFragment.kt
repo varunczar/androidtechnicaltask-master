@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cmcmarkets.android.custom.ProductItemViewedListener
 import com.cmcmarkets.android.data.ProductModel
 import com.cmcmarkets.android.exercise.R
 import com.cmcmarkets.android.util.ViewModelFactory
@@ -28,7 +29,7 @@ import javax.inject.Inject
 /**
  * This fragment houses the watchlist chips and product details for each watch list item
  */
-class WatchListsFragment : BaseFragment() {
+class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
 
     @Inject
     lateinit var mViewModelFactory: ViewModelFactory
@@ -70,6 +71,7 @@ class WatchListsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mProductsAdapter.mProductItemViewedListener=this
         mRecyclerView?.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = mProductsAdapter
@@ -113,6 +115,18 @@ class WatchListsFragment : BaseFragment() {
                 mProductsAdapter.addItems(it as ArrayList<ProductModel>)
             }
         })
+
+        //Observe for availability of buy sell prices and display them
+        mWatchListProductsViewModel?.mPriceModel?.observe(this, Observer {
+            it?.let {
+                val position = it.position
+                it.priceTO?.let {
+                    mProductsAdapter.mProductPrices.put(position, it)
+                    mProductsAdapter.notifyItemChanged(position)
+                }
+
+            }
+        })
     }
 
     /**
@@ -131,6 +145,16 @@ class WatchListsFragment : BaseFragment() {
                 addView(chip)
             }
         }
+    }
+
+    /**
+     * This is invoked when a particular product is visible to the user
+     */
+    override fun onViewed(position: Int, productId: Long) {
+        mRecyclerView?.post {
+            mWatchListProductsViewModel?.fetchPriceForProduct(position,productId)
+        }
+
     }
 
     companion object {

@@ -1,7 +1,7 @@
 package com.cmcmarkets.android.repository
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.cmcmarkets.android.data.PriceModel
 import com.cmcmarkets.android.data.ProductModel
 import com.cmcmarkets.api.products.*
 import com.cmcmarkets.api.session.ISessionApi
@@ -84,7 +84,7 @@ class Repository @Inject constructor() {
     }
 
     /**
-     * This method fetches the product data and product details in parrallel and returns a list of
+     * This method fetches the product data and product details in parallel and returns a list of
      * product models
      */
     private fun getProductModels(sessionToken: String, list: List<Long>): Single<List<ProductModel>> {
@@ -102,6 +102,21 @@ class Repository @Inject constructor() {
                 }
                 // Put everything back on a list
                 .toList()
+    }
+
+    /**
+     * This method fetches the product prices data
+     */
+    fun getProductPrice(position : Int,productId : Long,  priceModel : MutableLiveData<PriceModel>) {
+        mCompositeDisposable.add(
+                iSessionApi.sessionTokenSingle()
+                        .flatMap { sessionTO: SessionTO ->  iProductApi.productPrices(sessionTO.token, productId).firstOrError() }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                {success -> priceModel.postValue(PriceModel(position, productId, success)); clearCompositeDisposable()}, {
+                            mThrowable.postValue(it)
+                            priceModel.postValue(null); clearCompositeDisposable()})
+        )
     }
 
     /**

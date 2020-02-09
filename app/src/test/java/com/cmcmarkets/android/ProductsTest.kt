@@ -9,6 +9,7 @@ import com.cmcmarkets.api.products.*
 import com.cmcmarkets.api.session.ISessionApi
 import com.cmcmarkets.api.session.SessionTO
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,6 +78,7 @@ class ProductsTest {
         val liveData = MutableLiveData<List<ProductModel>>()
         mRepository.getProducts(MutableLiveData(), arrayListOf(1), liveData)
         assert(liveData.value == null)
+
     }
 
 }

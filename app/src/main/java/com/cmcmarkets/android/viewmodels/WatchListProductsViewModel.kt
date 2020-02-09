@@ -2,6 +2,7 @@ package com.cmcmarkets.android.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cmcmarkets.android.data.PriceModel
 import com.cmcmarkets.android.data.ProductModel
 import com.cmcmarkets.android.repository.Repository
 import com.cmcmarkets.api.products.WatchlistTO
@@ -15,6 +16,7 @@ class WatchListProductsViewModel(val mRepository: Repository) : ViewModel() {
     var mWatchListItems = MutableLiveData<List<WatchlistTO>>()
     var mSelectedWatchTO = MutableLiveData<WatchlistTO> ()
     var mProductModels = MutableLiveData<List<ProductModel>>()
+    var mPriceModel = MutableLiveData<PriceModel>()
 
     init {
         //Populate the watchlist items
@@ -33,6 +35,13 @@ class WatchListProductsViewModel(val mRepository: Repository) : ViewModel() {
      */
     fun fetchProductModelsForProducts(productIds : List<Long>) {
         mRepository.getProducts(mIsLoading, productIds, mProductModels)
+    }
+
+    /**
+     * This methods calls on the repository to fetch product price details per product
+     */
+    fun fetchPriceForProduct(position : Int, productId : Long) {
+        mRepository.getProductPrice(position,productId,mPriceModel)
     }
 
     /**

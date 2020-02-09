@@ -18,12 +18,7 @@ object TestUtils {
 
     private fun setUpErrorHandler() {
         RxJavaPlugins.setErrorHandler {
-            if(it is ApiError.SessionUnrecognized) {
-                System.out.println("Unrecognised session")
-            }
-            else {
-                System.out.println("Error ${it}")
-            }
+            System.out.println("Error ${it}")
         }
     }
 

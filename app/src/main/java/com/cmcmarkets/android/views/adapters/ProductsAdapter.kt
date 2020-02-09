@@ -1,19 +1,11 @@
 package com.cmcmarkets.android.views.adapters
 
-import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.cmcmarkets.android.custom.ProductItemViewedListener
 import com.cmcmarkets.android.data.ProductModel
-import com.cmcmarkets.android.exercise.R
 import com.cmcmarkets.android.views.viewholders.ProductViewHolder
 import com.cmcmarkets.api.products.PriceTO
-import kotlinx.android.synthetic.main.product_item.view.*
-import javax.inject.Inject
 
 /**
  * This adapter helps to display the list of product details along with their prices
@@ -21,6 +13,10 @@ import javax.inject.Inject
 class ProductsAdapter : RecyclerView.Adapter<ProductViewHolder>() {
 
     var mProductModels = ArrayList<ProductModel>()
+
+    var mProductPrices = HashMap<Int, PriceTO>()
+
+    var mProductItemViewedListener : ProductItemViewedListener? = null
 
     init {
         //Set stable ids to avoid duplication of data across rows on scroll
@@ -32,6 +28,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductViewHolder>() {
      */
     fun clearItems() {
         this.mProductModels.clear()
+        this.mProductPrices.clear()
         notifyDataSetChanged()
     }
 
@@ -48,7 +45,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(mProductModels[position])
+        holder.bind(mProductModels[position],mProductPrices[position], position, mProductItemViewedListener)
     }
 
     override fun getItemCount(): Int {

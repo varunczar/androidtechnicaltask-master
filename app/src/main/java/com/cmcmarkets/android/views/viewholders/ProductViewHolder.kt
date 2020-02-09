@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cmcmarkets.android.custom.*
-import com.cmcmarkets.android.custom.Constants.SYMBOL_HYPHEN
+import com.cmcmarkets.android.custom.Constants.DECIMAL_PLACES_BUY_SELL
 import com.cmcmarkets.android.data.ProductModel
 import com.cmcmarkets.android.exercise.R
 import com.cmcmarkets.api.products.PriceTO
@@ -30,7 +30,7 @@ class ProductViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         mTextViewMargin = v.margin as TextView
     }
 
-    fun bind(productModel: ProductModel?) {
+    fun bind(productModel: ProductModel?, priceTO: PriceTO?, position: Int, productItemViewedListener : ProductItemViewedListener?) {
         productModel?.apply {
             productTO?.apply {
                 mTextViewCurrencyName.text = name
@@ -41,6 +41,13 @@ class ProductViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 mTextViewMargin.formatSpread(this)
             }
 
+            priceTO?.let {
+                mTextViewSellPrice.text = it.sell?.toDouble()?.round(DECIMAL_PLACES_BUY_SELL).toString()
+                mTextViewBuyPrice.text = it.buy?.toDouble()?.round(DECIMAL_PLACES_BUY_SELL).toString()
+            } ?: run {
+                mTextViewSellPrice.text = Constants.SYMBOL_HYPHEN
+                mTextViewBuyPrice.text = Constants.SYMBOL_HYPHEN
+                productItemViewedListener?.onViewed(position,this.productId) }
 
         }
     }
