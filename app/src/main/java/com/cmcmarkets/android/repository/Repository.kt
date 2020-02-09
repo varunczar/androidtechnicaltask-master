@@ -11,6 +11,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -44,10 +45,9 @@ class Repository @Inject constructor() {
                         .subscribe(
                                 { success ->
                                     isLoading.postValue(false)
-                                    if(success.isNotEmpty()) {
+                                    if (success.isNotEmpty()) {
                                         watchListItems.postValue(success)
-                                    }
-                                    else {
+                                    } else {
                                         mThrowable.postValue(Throwable("No data"))
                                     }
                                     clearCompositeDisposable()
@@ -63,23 +63,28 @@ class Repository @Inject constructor() {
     /**
      * This method fetches products and product details for a list of product Ids for a session
      */
-    fun getProducts(isLoading : MutableLiveData<Boolean>,
+    fun getProducts(isLoading: MutableLiveData<Boolean>,
                     productIds: List<Long>,
-                    productModels : MutableLiveData<List<ProductModel>>) {
+                    productModels: MutableLiveData<List<ProductModel>>) {
         isLoading.postValue(true)
         mCompositeDisposable.add(
                 iSessionApi.sessionTokenSingle()
-                        .flatMap { sessionTO: SessionTO ->  getProductModels(sessionTO.token, productIds) }
+                        .flatMap { sessionTO: SessionTO -> getProductModels(sessionTO.token, productIds) }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                {success -> isLoading.postValue(false)
-                                    if(success.isNotEmpty()) {productModels.postValue(success)}
-                                    else {
+                                { success ->
+                                    isLoading.postValue(false)
+                                    if (success.isNotEmpty()) {
+                                        productModels.postValue(success)
+                                    } else {
                                         mThrowable.postValue(Throwable("No data"))
                                     }
-                                    clearCompositeDisposable()}, { isLoading.postValue(false)
+                                    clearCompositeDisposable()
+                                }, {
+                            isLoading.postValue(false)
                             mThrowable.postValue(it)
-                            productModels.postValue(null); clearCompositeDisposable()})
+                            productModels.postValue(null); clearCompositeDisposable()
+                        })
         )
     }
 
@@ -97,7 +102,7 @@ class Repository @Inject constructor() {
                             iProductApi.productDetailsSingle(sessionToken, it),
                             BiFunction<ProductTO, ProductDetailsTO, ProductModel>
                             { product, productDetails ->
-                                ProductModel(it,product,productDetails)
+                                ProductModel(it, product, productDetails)
                             })
                 }
                 // Put everything back on a list
@@ -107,15 +112,16 @@ class Repository @Inject constructor() {
     /**
      * This method fetches the product prices data
      */
-    fun getProductPrice(position : Int,productId : Long,  priceModel : MutableLiveData<PriceModel>) {
+    fun getProductPrice(position: Int, productId: Long, priceModel: MutableLiveData<PriceModel>) {
         mCompositeDisposable.add(
                 iSessionApi.sessionTokenSingle()
-                        .flatMap { sessionTO: SessionTO ->  iProductApi.productPrices(sessionTO.token, productId).firstOrError() }
+                        .flatMap { sessionTO: SessionTO -> iProductApi.productPrices(sessionTO.token, productId).firstOrError() }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                {success -> priceModel.postValue(PriceModel(position, productId, success)); clearCompositeDisposable()}, {
+                                { success -> priceModel.postValue(PriceModel(position, productId, success)); clearCompositeDisposable() }, {
                             mThrowable.postValue(it)
-                            priceModel.postValue(null); clearCompositeDisposable()})
+                            priceModel.postValue(null); clearCompositeDisposable()
+                        })
         )
     }
 

@@ -16,7 +16,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductViewHolder>() {
 
     var mProductPrices = HashMap<Int, PriceTO>()
 
-    var mProductItemViewedListener : ProductItemViewedListener? = null
+    var mProductItemViewedListener: ProductItemViewedListener? = null
 
     init {
         //Set stable ids to avoid duplication of data across rows on scroll
@@ -45,7 +45,7 @@ class ProductsAdapter : RecyclerView.Adapter<ProductViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(mProductModels[position],mProductPrices[position], position, mProductItemViewedListener)
+        holder.bind(mProductModels[position], mProductPrices[position], position, mProductItemViewedListener)
     }
 
     override fun getItemCount(): Int {

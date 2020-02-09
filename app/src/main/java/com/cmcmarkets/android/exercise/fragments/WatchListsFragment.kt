@@ -35,13 +35,13 @@ class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
     lateinit var mViewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var mProductsAdapter : ProductsAdapter
+    lateinit var mProductsAdapter: ProductsAdapter
 
     var mWatchListProductsViewModel: WatchListProductsViewModel? = null
 
-    var mRecyclerView : RecyclerView? = null
-    private var mSelector : ChipGroup? = null
-    private var mLoader : ContentLoadingProgressBar? = null
+    var mRecyclerView: RecyclerView? = null
+    private var mSelector: ChipGroup? = null
+    private var mLoader: ContentLoadingProgressBar? = null
     private var mView: View? = null
 
     override fun onAttach(context: Context) {
@@ -56,7 +56,7 @@ class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment and initialise the viewmodel
-        if(mView==null) {
+        if (mView == null) {
             mWatchListProductsViewModel = ViewModelProvider(activity as FragmentActivity, mViewModelFactory).get(WatchListProductsViewModel::class.java)
             mView = inflater.inflate(R.layout.fragment_watchlists, container, false)
             mView?.apply {
@@ -71,7 +71,7 @@ class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mProductsAdapter.mProductItemViewedListener=this
+        mProductsAdapter.mProductItemViewedListener = this
         mRecyclerView?.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = mProductsAdapter
@@ -87,12 +87,12 @@ class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
             watchListTOs?.let {
                 hideErrorMessage()
                 createWatchListItems(it)
-            } ?: run { setErrorMessage(resources.getString(R.string.error_no_data))}
+            } ?: run { setErrorMessage(resources.getString(R.string.error_no_data)) }
         })
 
         //Observe changes to the load status
         mWatchListProductsViewModel?.mIsLoading?.observe(this, Observer { isLoading ->
-            if(isLoading) mLoader?.show() else mLoader?.hide()
+            if (isLoading) mLoader?.show() else mLoader?.hide()
         })
 
         //Observe for any errors and handle the error
@@ -152,7 +152,7 @@ class WatchListsFragment : BaseFragment(), ProductItemViewedListener {
      */
     override fun onViewed(position: Int, productId: Long) {
         mRecyclerView?.post {
-            mWatchListProductsViewModel?.fetchPriceForProduct(position,productId)
+            mWatchListProductsViewModel?.fetchPriceForProduct(position, productId)
         }
 
     }

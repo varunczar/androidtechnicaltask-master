@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/half_default_margin">
@@ -21,10 +20,9 @@
                 android:id="@+id/country_currency"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/default_margin"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                />
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
 
             <TextView
                 android:id="@+id/spread"
@@ -42,7 +40,6 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
 
         </LinearLayout>
-
 
 
     </LinearLayout>

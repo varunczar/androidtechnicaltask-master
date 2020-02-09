@@ -30,7 +30,7 @@ class ProductViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         mTextViewMargin = v.margin as TextView
     }
 
-    fun bind(productModel: ProductModel?, priceTO: PriceTO?, position: Int, productItemViewedListener : ProductItemViewedListener?) {
+    fun bind(productModel: ProductModel?, priceTO: PriceTO?, position: Int, productItemViewedListener: ProductItemViewedListener?) {
         productModel?.apply {
             productTO?.apply {
                 mTextViewCurrencyName.text = name
@@ -47,7 +47,8 @@ class ProductViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             } ?: run {
                 mTextViewSellPrice.text = Constants.SYMBOL_HYPHEN
                 mTextViewBuyPrice.text = Constants.SYMBOL_HYPHEN
-                productItemViewedListener?.onViewed(position,this.productId) }
+                productItemViewedListener?.onViewed(position, this.productId)
+            }
 
         }
     }

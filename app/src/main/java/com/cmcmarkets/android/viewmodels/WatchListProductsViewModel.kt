@@ -14,7 +14,7 @@ class WatchListProductsViewModel(val mRepository: Repository) : ViewModel() {
 
     var mIsLoading = MutableLiveData<Boolean>()
     var mWatchListItems = MutableLiveData<List<WatchlistTO>>()
-    var mSelectedWatchTO = MutableLiveData<WatchlistTO> ()
+    var mSelectedWatchTO = MutableLiveData<WatchlistTO>()
     var mProductModels = MutableLiveData<List<ProductModel>>()
     var mPriceModel = MutableLiveData<PriceModel>()
 
@@ -33,15 +33,15 @@ class WatchListProductsViewModel(val mRepository: Repository) : ViewModel() {
     /**
      * This methods calls on the repository to fetch product details for a list of product ids
      */
-    fun fetchProductModelsForProducts(productIds : List<Long>) {
+    fun fetchProductModelsForProducts(productIds: List<Long>) {
         mRepository.getProducts(mIsLoading, productIds, mProductModels)
     }
 
     /**
      * This methods calls on the repository to fetch product price details per product
      */
-    fun fetchPriceForProduct(position : Int, productId : Long) {
-        mRepository.getProductPrice(position,productId,mPriceModel)
+    fun fetchPriceForProduct(position: Int, productId: Long) {
+        mRepository.getProductPrice(position, productId, mPriceModel)
     }
 
     /**

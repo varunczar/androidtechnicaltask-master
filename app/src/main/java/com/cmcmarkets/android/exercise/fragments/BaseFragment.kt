@@ -16,9 +16,9 @@ import kotlinx.android.synthetic.main.error.*
  */
 abstract class BaseFragment : Fragment() {
 
-    var mConnectionLiveData : ConnectionLiveData ? = null
+    var mConnectionLiveData: ConnectionLiveData? = null
 
-    var mError : ErrorView? = null
+    var mError: ErrorView? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,7 +32,7 @@ abstract class BaseFragment : Fragment() {
     /**
      * This method sets the generic error message based on the message string passed in
      */
-    fun setErrorMessage(message : String) {
+    fun setErrorMessage(message: String) {
         mError?.apply {
             visibility = View.VISIBLE
             error_text?.text = message
@@ -50,11 +50,11 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-    * This method sets the network specific error message based on the message string passed in
-    */
+     * This method sets the network specific error message based on the message string passed in
+     */
     fun setNetworkError(message: String) {
         mError?.apply {
-            icon_error.setImageDrawable(resources.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp,null))
+            icon_error.setImageDrawable(resources.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp, null))
         }
         setErrorMessage(message)
     }
@@ -64,7 +64,7 @@ abstract class BaseFragment : Fragment() {
      */
     fun observeDataConnectivity() {
         mConnectionLiveData?.observe(this, Observer {
-            when(it) {
+            when (it) {
                 ConnectivityState.UNSTABLE -> setNetworkError(resources.getString(R.string.error_network_losing))
                 ConnectivityState.LOST -> setNetworkError(resources.getString(R.string.error_network_lost))
                 else -> hideErrorMessage()
@@ -76,7 +76,7 @@ abstract class BaseFragment : Fragment() {
      * This method handles the different kinds of errors that the app encounters
      */
     fun handleError(throwable: Throwable) {
-        when(throwable) {
+        when (throwable) {
             ApiError.SessionUnrecognized -> setErrorMessage(resources.getString(R.string.error_session_unrecognised))
             ApiError.SessionExpired -> setErrorMessage(resources.getString(R.string.error_session_expired))
             ApiError.Disconnected -> setErrorMessage(resources.getString(R.string.error_session_disconnected))
