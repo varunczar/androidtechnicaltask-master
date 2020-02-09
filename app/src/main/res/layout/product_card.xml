@@ -21,18 +21,17 @@
                 android:id="@+id/country_currency"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin"
                 android:layout_weight="1"
+                android:layout_marginStart="@dimen/default_margin"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                tools:text="US - Pound" />
+                />
 
             <TextView
                 android:id="@+id/spread"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_margin"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                tools:text="Spread: 0.1" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
 
             <TextView
                 android:id="@+id/margin"
@@ -40,10 +39,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/default_margin"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                tools:text="Margin: 5%" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
 
         </LinearLayout>
+
 
 
     </LinearLayout>
