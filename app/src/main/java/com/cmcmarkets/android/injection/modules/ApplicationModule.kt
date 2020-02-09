@@ -2,6 +2,7 @@ package com.cmcmarkets.android.injection.modules
 
 import com.cmcmarkets.android.CustomApp
 import com.cmcmarkets.android.data.ConnectionLiveData
+import com.cmcmarkets.android.views.adapters.ProductsAdapter
 import com.cmcmarkets.api.internal.implementations.MockProductApi
 import com.cmcmarkets.api.internal.implementations.MockSessionApi
 import com.cmcmarkets.api.internal.implementations.MockWatchlistApi
@@ -49,6 +50,15 @@ class ApplicationModule {
     @Singleton
     fun provideConnectionLiveData(application: CustomApp): ConnectionLiveData {
         return ConnectionLiveData(application)
+    }
+
+    /**
+     * This method provides an instance of the products adapter that displays product details
+     */
+    @Provides
+    @Singleton
+    fun provideProductsAdapter(): ProductsAdapter {
+        return ProductsAdapter()
     }
 
 }

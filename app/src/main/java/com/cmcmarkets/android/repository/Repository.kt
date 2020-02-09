@@ -1,13 +1,16 @@
 package com.cmcmarkets.android.repository
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.cmcmarkets.api.products.IProductApi
-import com.cmcmarkets.api.products.IWatchlistApi
-import com.cmcmarkets.api.products.WatchlistTO
+import com.cmcmarkets.android.data.ProductModel
+import com.cmcmarkets.api.products.*
 import com.cmcmarkets.api.session.ISessionApi
 import com.cmcmarkets.api.session.SessionTO
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 /**
@@ -55,6 +58,50 @@ class Repository @Inject constructor() {
                             clearCompositeDisposable()
                         })
         )
+    }
+
+    /**
+     * This method fetches products and product details for a list of product Ids for a session
+     */
+    fun getProducts(isLoading : MutableLiveData<Boolean>,
+                    productIds: List<Long>,
+                    productModels : MutableLiveData<List<ProductModel>>) {
+        isLoading.postValue(true)
+        mCompositeDisposable.add(
+                iSessionApi.sessionTokenSingle()
+                        .flatMap { sessionTO: SessionTO ->  getProductModels(sessionTO.token, productIds) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                {success -> isLoading.postValue(false)
+                                    if(success.isNotEmpty()) {productModels.postValue(success)}
+                                    else {
+                                        mThrowable.postValue(Throwable("No data"))
+                                    }
+                                    clearCompositeDisposable()}, { isLoading.postValue(false)
+                            mThrowable.postValue(it)
+                            productModels.postValue(null); clearCompositeDisposable()})
+        )
+    }
+
+    /**
+     * This method fetches the product data and product details in parrallel and returns a list of
+     * product models
+     */
+    private fun getProductModels(sessionToken: String, list: List<Long>): Single<List<ProductModel>> {
+        // Get an Observable of the list
+        return Observable.fromIterable(list)
+                // Get a Single<ResponseBody> for every Product ID
+                .flatMapSingle {
+                    Single.zip(
+                            iProductApi.productSingle(sessionToken, it),
+                            iProductApi.productDetailsSingle(sessionToken, it),
+                            BiFunction<ProductTO, ProductDetailsTO, ProductModel>
+                            { product, productDetails ->
+                                ProductModel(it,product,productDetails)
+                            })
+                }
+                // Put everything back on a list
+                .toList()
     }
 
     /**

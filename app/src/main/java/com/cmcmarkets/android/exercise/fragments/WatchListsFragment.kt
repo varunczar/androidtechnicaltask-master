@@ -10,10 +10,13 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cmcmarkets.android.data.ProductModel
 import com.cmcmarkets.android.exercise.R
 import com.cmcmarkets.android.util.ViewModelFactory
 import com.cmcmarkets.android.viewmodels.WatchListProductsViewModel
+import com.cmcmarkets.android.views.adapters.ProductsAdapter
 import com.cmcmarkets.api.products.WatchlistTO
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,6 +32,9 @@ class WatchListsFragment : BaseFragment() {
 
     @Inject
     lateinit var mViewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mProductsAdapter : ProductsAdapter
 
     var mWatchListProductsViewModel: WatchListProductsViewModel? = null
 
@@ -62,6 +68,14 @@ class WatchListsFragment : BaseFragment() {
         return mView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mRecyclerView?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = mProductsAdapter
+        }
+    }
+
     /**
      * This method observes all viewmodels and updates the fragment if data changes
      */
@@ -83,6 +97,22 @@ class WatchListsFragment : BaseFragment() {
         mWatchListProductsViewModel?.getErrorsIfAny()?.observe(this, Observer {
             handleError(it)
         })
+
+        //Observe for the selection of the watchlist item and fetch and populate the products
+        mWatchListProductsViewModel?.mSelectedWatchTO?.observe(this, Observer {
+            it?.details?.productIds?.let {
+                hideErrorMessage()
+                mWatchListProductsViewModel?.fetchProductModelsForProducts(it)
+            }
+        })
+
+        //Observe for availability of product models and display them
+        mWatchListProductsViewModel?.mProductModels?.observe(this, Observer {
+            it?.let {
+                hideErrorMessage()
+                mProductsAdapter.addItems(it as ArrayList<ProductModel>)
+            }
+        })
     }
 
     /**
@@ -94,6 +124,10 @@ class WatchListsFragment : BaseFragment() {
             watchlistTOs.forEach {
                 val chip = View.inflate(context, R.layout.watchlist_item, null) as Chip
                 chip.setText(it.details.name)
+                chip.setOnCheckedChangeListener { compoundButton, isChecked ->
+                    mProductsAdapter.clearItems()
+                    mWatchListProductsViewModel?.mSelectedWatchTO?.postValue(it)
+                }
                 addView(chip)
             }
         }
